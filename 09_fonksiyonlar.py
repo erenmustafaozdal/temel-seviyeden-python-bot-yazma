@@ -57,7 +57,7 @@ tam_ad_yaz("Eren", "Özdal")
 # ESNEK SAYIDA PARAMETRE GÖNDERMEK
 # *args parametresi
 def toplama(*args):
-    # *args: ()
+    # *args: (4, 7, 10, 15)
     toplam = 0
     for sayi in args:
         toplam += sayi
