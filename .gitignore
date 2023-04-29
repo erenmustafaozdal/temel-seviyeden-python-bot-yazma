@@ -3,3 +3,7 @@
 
 # Python ön bellek klsörü
 __pycache__
+
+# log dosyaları
+logs
+*.log
