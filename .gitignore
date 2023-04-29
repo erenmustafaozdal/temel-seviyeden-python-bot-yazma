@@ -1,1 +1,5 @@
+# PyCharm klasörü
 .idea
+
+# Python ön bellek klsörü
+__pycache__
