@@ -10,3 +10,6 @@ logs
 
 # Veritabanları
 *.db
+
+# Ayar dosyamız
+ayarlar.py
