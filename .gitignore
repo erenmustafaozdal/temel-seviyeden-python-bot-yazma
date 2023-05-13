@@ -13,3 +13,6 @@ logs
 
 # Ayar dosyamız
 ayarlar.py
+
+# Excel dosyaları
+*.xlsx
