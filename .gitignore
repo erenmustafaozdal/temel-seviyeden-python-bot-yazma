@@ -16,3 +16,6 @@ ayarlar.py
 
 # Excel dosyaları
 *.xlsx
+
+# görsellerin olduğu klasör
+images
