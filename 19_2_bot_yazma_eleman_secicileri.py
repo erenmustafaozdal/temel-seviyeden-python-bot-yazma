@@ -75,5 +75,10 @@ mebim_link = driver.find_element(By.LINK_TEXT, "444 0 MEB")
 ActionChains(driver).key_down(Keys.CONTROL).click(mebim_link).key_up(Keys.CONTROL).perform()
 sleep(3)
 
+# partial link text ile web sayfasındaki elemanları seçelim
+links = driver.find_elements(By.PARTIAL_LINK_TEXT, "MEB")
+for link in links:
+    print(link.get_attribute("href"))
+
 # tarayıcıyı kapatalım
 driver.quit()
