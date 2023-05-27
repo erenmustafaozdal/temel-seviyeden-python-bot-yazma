@@ -1,9 +1,19 @@
 from modules.browser import Browser
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
+from selenium.webdriver.support.wait import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
 from time import sleep
 import logging
 import sys
+import os
+import urllib.request
+
+
+# görselleri indireceğimiz klasör yoksa oluşturalım
+images_dir = "./images"
+if not os.path.exists(images_dir):
+    os.mkdir(images_dir)
 
 komut_log = logging.StreamHandler(stream=sys.stdout)
 
@@ -21,6 +31,10 @@ driver = Browser().get()
 
 # amazon sayfasına gidelim
 driver.get("https://amazon.com.tr")
+
+# sayfanın yüklendiğinde emin olalım (arama kutucuğu sayfada görünene kadar bekle)
+wait = WebDriverWait(driver, 30)
+wait.until(EC.visibility_of_element_located((By.ID, "twotabsearchtextbox")))
 
 # eğer varsa çerezleri kabul et
 try:
@@ -44,5 +58,10 @@ for product in products:
     # ürünün adını alalım
     name = product.find_element(By.TAG_NAME, "h2").text
     logger.info(f"----- Ürün adı: {name}")
+
+    # ürünün resim linkini (<img src="">) alalım
+    src = product.find_element(By.TAG_NAME, "img").get_attribute("src")
+    urllib.request.urlretrieve(src, f"{images_dir}/{id}.jpg")
+    logger.info(f"----- Ürün resim linki: {src} (indirildi)")
 
 
