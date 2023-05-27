@@ -8,12 +8,26 @@ import logging
 import sys
 import os
 import urllib.request
+from openpyxl import Workbook, load_workbook
+from datetime import datetime
 
 
 # görselleri indireceğimiz klasör yoksa oluşturalım
 images_dir = "./images"
 if not os.path.exists(images_dir):
     os.mkdir(images_dir)
+
+
+# excel dosyası yoksa oluştur ve sütun başlıklarını yaz, varsa aç
+excel_path = "amazon_products.xlsx"
+if not os.path.exists(excel_path):
+    wb = Workbook()
+    ws = wb.active
+    # dosya oluşturuldu ve başlıkları yazılacak
+    ws.append(["TARİH", "ID", "AD", "GÖRSEL", "FİYAT"])
+else:
+    wb = load_workbook(excel_path)
+    ws = wb.active
 
 komut_log = logging.StreamHandler(stream=sys.stdout)
 
@@ -34,7 +48,12 @@ driver.get("https://amazon.com.tr")
 
 # sayfanın yüklendiğinde emin olalım (arama kutucuğu sayfada görünene kadar bekle)
 wait = WebDriverWait(driver, 30)
-wait.until(EC.visibility_of_element_located((By.ID, "twotabsearchtextbox")))
+while True:
+    try:
+        wait.until(EC.visibility_of_element_located((By.ID, "twotabsearchtextbox")))
+        break
+    except:
+        driver.refresh()
 
 # eğer varsa çerezleri kabul et
 try:
@@ -61,7 +80,28 @@ for product in products:
 
     # ürünün resim linkini (<img src="">) alalım
     src = product.find_element(By.TAG_NAME, "img").get_attribute("src")
-    urllib.request.urlretrieve(src, f"{images_dir}/{id}.jpg")
+    image_path = f"{images_dir}/{id}.jpg"
+    urllib.request.urlretrieve(src, image_path)
     logger.info(f"----- Ürün resim linki: {src} (indirildi)")
 
+    # ürünün fiyatını alalım
+    try:
+        lira = product.find_element(By.CLASS_NAME, "a-price-whole").text
+        kurus = product.find_element(By.CLASS_NAME, "a-price-fraction").text
+        price = float(f"{lira}.{kurus}")
+        logger.info(f"----- Ürünün fiyatı: {price}")
+    except:
+        price = ""
+        logger.error("----- Ürün fiyatı bulunamadı.")
 
+    # Excel kayıt işlemleri
+    ws.append([
+        datetime.now(),
+        id,
+        name,
+        f'=HYPERLINK("{os.getcwd()}/{image_path}", "GÖRSEL")',
+        price
+    ])
+
+
+wb.save(excel_path)
