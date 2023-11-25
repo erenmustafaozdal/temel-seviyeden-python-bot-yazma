@@ -13,6 +13,7 @@ dp = Dispatcher(bot)
 async def send_hello(message: types.Message):
     await message.answer("Merhaba, son haberi istiyorsanız /haber komutunu gönderin.")
 
+
 @dp.message_handler(commands=["haber"])
 async def send_news(message: types.Message):
     # get isteği oluşturalım ve cevabı alalım
