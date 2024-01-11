@@ -1,15 +1,15 @@
 import time
 import logging
 from modules.log import Log
-from modules.sahibinden import Sahibinden
+from modules.hepsiemlak import HepsiEmlak
 
 
 # log ayarlarını yapalım
-Log("sahibinden")
+Log("hepsiemlak")
 logger = logging.getLogger(__name__)
 
-# Sahibinden nesnesi oluştur ve arama yap
-s = Sahibinden()
+# HepsiEmlak nesnesi oluştur ve arama yap
+s = HepsiEmlak()
 s.search(categories="Konut,Satılık,Daire")
 
 time.sleep(5)

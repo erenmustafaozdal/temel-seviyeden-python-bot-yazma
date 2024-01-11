@@ -9,7 +9,7 @@ from selenium.webdriver.common.by import By
 from selenium.common.exceptions import TimeoutException, NoSuchElementException
 
 
-class Sahibinden:
+class HepsiEmlak:
 
     URL = "https://www.hepsiemlak.com"
     logger = None
