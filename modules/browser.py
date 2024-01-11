@@ -1,4 +1,5 @@
 import logging
+from typing import Union
 from selenium import webdriver
 from selenium.webdriver.chrome.service import Service
 from webdriver_manager.chrome import ChromeDriverManager
@@ -13,7 +14,7 @@ class Browser:
     tarayıcı (browser) nesnesi
     """
 
-    def __init__(self, is_headless: bool = False):
+    def __init__(self, is_headless: bool = False, proxy: Union[str, None] = None):
         """Yapılandırma metodu
 
         Args:
@@ -28,8 +29,18 @@ class Browser:
         Tarayıcı ayarlarına çeşitli argümanlar ekleniyor.
         Bu argümanlar, tarayıcının performansını ve güvenlik ayarlarını etkiler.
         """
+
+        # eğer isteniyorsa proxy işlemi başlat
+        # eğer proxy kullanılmayacaksa koruma modunu devre dışı bırak
+        # http://free-proxy.cz/en/proxylist/country/TR/all/speed/level1
+        if proxy:
+            options.add_argument(f"--proxy-server={proxy}")
+
         # Tarayıcının konsola otomatik olarak log yazmasını engelle.
         options.add_experimental_option('excludeSwitches', ['enable-logging'])
+        options.add_experimental_option(
+            "excludeSwitches", ["enable-automation"])
+        options.add_experimental_option('useAutomationExtension', False)
 
         # gizli çalışma
         if is_headless:
