@@ -7,6 +7,9 @@ name = "pypi"
 selenium = "*"
 webdriver-manager = "*"
 openpyxl = "*"
+seleniumbase = "*"
+pip = "*"
+undetected-chromedriver = "*"
 
 [dev-packages]
 
