@@ -10,6 +10,7 @@ openpyxl = "*"
 seleniumbase = "*"
 pip = "*"
 undetected-chromedriver = "*"
+tqdm = "*"
 
 [dev-packages]
 
