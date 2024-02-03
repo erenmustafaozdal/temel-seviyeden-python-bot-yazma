@@ -4,6 +4,8 @@ from selenium import webdriver
 from selenium.webdriver.chrome.service import Service
 from webdriver_manager.chrome import ChromeDriverManager
 from selenium.webdriver.chrome.options import Options
+from selenium.webdriver.remote.webelement import WebElement
+import undetected_chromedriver as uc
 
 
 logger = logging.getLogger(__name__)
@@ -14,7 +16,12 @@ class Browser:
     tarayıcı (browser) nesnesi
     """
 
-    def __init__(self, is_headless: bool = False, proxy: Union[str, None] = None):
+    def __init__(
+        self,
+        is_headless: bool = False,
+        proxy: Union[str, None] = None,
+        undetected: bool = False
+    ):
         """Yapılandırma metodu
 
         Args:
@@ -38,9 +45,12 @@ class Browser:
 
         # Tarayıcının konsola otomatik olarak log yazmasını engelle.
         options.add_experimental_option('excludeSwitches', ['enable-logging'])
+
+        # Tarayıcının bot olduğunu gizleyecek ayarlar yapılandırması
         options.add_experimental_option(
             "excludeSwitches", ["enable-automation"])
         options.add_experimental_option('useAutomationExtension', False)
+        options.add_argument('--disable-blink-features=AutomationControlled')
 
         # gizli çalışma
         if is_headless:
@@ -53,9 +63,14 @@ class Browser:
 
         logger.info("Tarayıcı ayarları yapıldı.")
 
-        chrome_install = ChromeDriverManager().install()
-        chrome_service = Service(chrome_install)
-        self.driver = webdriver.Chrome(service=chrome_service, options=options)
+        if not undetected:
+            chrome_install = ChromeDriverManager().install()
+            chrome_service = Service(chrome_install)
+            self.driver = webdriver.Chrome(
+                service=chrome_service, options=options)
+        else:
+            self.driver = uc.Chrome(headless=is_headless)
+
         logger.info("Tarayıcı çalıştırıldı")
 
         self.driver.maximize_window()
@@ -63,3 +78,12 @@ class Browser:
 
     def get(self):
         return self.driver
+
+    def click(self, element: WebElement):
+        # selenium click ile tıklamayı dene
+        try:
+            element.click()
+
+        # olmazsa javascript ile tıkla
+        except:
+            self.driver.execute_script("arguments[0].click();", element)
