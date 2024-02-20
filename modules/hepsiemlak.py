@@ -15,7 +15,7 @@ from selenium.webdriver.common.keys import Keys
 
 class HepsiEmlak:
 
-    URL = "https://www.hepsiemlak.com/osmaniye-satilik"
+    URL = "https://www.hepsiemlak.com/osmaniye-kiralik"
     # URL = "https://www.hepsiemlak.com/satilik"
     logger = None
     driver = None
@@ -367,12 +367,14 @@ class HE_Listing:
     front_xpath = "//span[text()='Cephe']/following-sibling::span"
     authorized_office_xpath = "//span[text()='Yetkili Ofis']/following-sibling::span"
     fuel_type_xpath = "//span[text()='Yakıt Tipi']/following-sibling::span"
+    description_class = "description-content"
 
     def __init__(self, he: HepsiEmlak) -> None:
         self.he = he
         self.he.is_page_loaded()
 
         # listeleme bilgileri
+        self.link = self.get_link()
         self.no = self.get_no()
         self.title = self.get_title()
         self.price = self.get_price()
@@ -399,6 +401,12 @@ class HE_Listing:
         self.front = self.get_front()
         self.authorized_office = self.get_authorized_office()
         self.fuel_type = self.get_fuel_type()
+        self.description = self.get_description()
+
+    def get_link(self):
+        link = self.he.driver.current_url
+        self.he.logger.info(f"----- LINK: {link}")
+        return f'=HYPERLINK("{link}", "LINK")'
 
     def get_no(self):
         no = self.he.driver.find_element(By.XPATH, self.no_xpath).text
@@ -542,10 +550,15 @@ class HE_Listing:
         return None
 
     def get_credit_eligibility(self):
-        credit_eligibility = self.he.driver.find_element(
-            By.XPATH, self.credit_eligibility_xpath).text
-        self.he.logger.info(f"----- Krediye Uygunluk: {credit_eligibility}")
-        return credit_eligibility
+        try:
+            credit_eligibility = self.he.driver.find_element(
+                By.XPATH, self.credit_eligibility_xpath).text
+            self.he.logger.info(
+                f"----- Krediye Uygunluk: {credit_eligibility}")
+            return credit_eligibility
+        except:
+            self.he.logger.warning("----- 'Krediye Uygunluk' bulunamadı.")
+            return None
 
     def get_furnished(self):
         try:
@@ -662,4 +675,15 @@ class HE_Listing:
             return fuel_type
         except:
             self.he.logger.warning("----- 'Yakıt Tipi' bulunamadı.")
+            return None
+
+    def get_description(self):
+        try:
+            description = self.he.driver.find_element(
+                By.CLASS_NAME, self.description_class).text
+            self.he.logger.info(
+                f"----- Açıklama: {description}")
+            return description
+        except:
+            self.he.logger.warning("----- 'Açıklama' bulunamadı.")
             return None
