@@ -5,6 +5,7 @@ class Listing(ExcelSheet):
 
     sheet_name = "İLANLAR"
     column_names = [
+        "link",
         "no",
         "title",
         "price",
@@ -34,8 +35,10 @@ class Listing(ExcelSheet):
         "front",
         "authorized_office",
         "fuel_type",
+        "description",
     ]
     column_names_translate = {
+        "link": "LINK",
         "no": "No",
         "title": "Başlık",
         "price": "Fiyat",
@@ -65,6 +68,7 @@ class Listing(ExcelSheet):
         "front": "Cephe",
         "authorized_office": "Yetkili Ofis",
         "fuel_type": "Yakıt Tipi",
+        "description": "Açıklama",
     }
 
     def create_column_names(self, column_names):
